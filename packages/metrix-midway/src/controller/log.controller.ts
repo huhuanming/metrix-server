@@ -4,6 +4,7 @@ import { Context } from '@midwayjs/koa';
 import { prisma } from '../prisma.js';
 import { MetricsType } from '@prisma/client';
 
+// const UPLOAD_PASSWORD = process.env.UPLOAD_PASSWORD;
 @Controller('/api/logs')
 export class LogController {
   @Inject()
@@ -15,7 +16,7 @@ export class LogController {
     @Fields() fields: { unitTestName: string; password: string; extra: string }
   ) {
     const { unitTestName, password, extra } = fields;
-    // if (password !== '') {
+    // if (password !== UPLOAD_PASSWORD) {
     //   return { success: false, message: 'password is wrong' };
     // }
     setTimeout(async () => {
