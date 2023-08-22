@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model UnitTest {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(100)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Measure   Measure[]
+  metrics   Metrics[]
+}
+
+model Measure {
+  id                 Int      @id @default(autoincrement())
+  unitTest           UnitTest @relation(fields: [unitTestId], references: [id])
+  unitTestId         Int
+  jsBundleLoadedTime Int
+  fpTime             Int
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+enum MetricsType {
+  uiFps
+  jsFps
+  usedCpu
+  usedRam
+}
+
+model Metrics {
+  id                 Int         @id @default(autoincrement())
+  unitTest           UnitTest    @relation(fields: [unitTestId], references: [id])
+  unitTestId         Int
+  type               MetricsType
+  jsBundleLoadedTime Int
+  fpTime             Int
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+}
