@@ -8,10 +8,13 @@ import { ReportMiddleware } from './middleware/report.middleware.js';
 import DefulatConfig from './config/config.default.js';
 import UnittestConfig from './config/config.unittest.js';
 
+import * as upload from '@midwayjs/upload';
+
 @Configuration({
   imports: [
     koa,
     validate,
+    upload,
     {
       component: info,
       enabledEnvironment: ['local'],
