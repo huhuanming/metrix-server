@@ -12,6 +12,9 @@ export class DashboardController {
   async getUnitTests() {
     return await prisma.unitTest.findMany({
       orderBy: [{ id: 'desc' }],
+      include: {
+        Measure: true,
+      },
     });
   }
 

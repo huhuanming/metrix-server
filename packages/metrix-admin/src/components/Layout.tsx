@@ -1,19 +1,18 @@
 import {
   DashboardOutlined,
-  GithubFilled,
   InfoCircleFilled,
   LoginOutlined,
   PlusCircleFilled,
   QuestionCircleFilled,
   SearchOutlined,
 } from '@ant-design/icons';
-import { ProBreadcrumb, ProConfigProvider, ProSettings } from '@ant-design/pro-components';
+import { ProBreadcrumb, ProConfigProvider, ProSettings, PageContainer } from '@ant-design/pro-components';
 import ProLayout from '@ant-design/pro-layout';
 import { Input, Switch, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 
-import { getOperatingSystem, treeRouter } from '../utils';
+import { getOperatingSystem } from '../utils';
 
 const Settings = {
     title: 'admin',
@@ -26,10 +25,9 @@ const baseRouterList = [
     key: 'dashboard',
     path: 'dashboard',
     icon: <DashboardOutlined />,
-    filepath: '../pages/Dashboard.tsx',
   },
 ];
-export const Layout = () => {
+export const Layout = ({children}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [pathname, setPathname] = useState(location.pathname);
@@ -67,10 +65,7 @@ export const Layout = () => {
           siderWidth={245}
           logo={Settings.logo}
           ErrorBoundary={false}
-          route={{
-            path: '/',
-            routes: treeRouter([...baseRouterList]),
-          }}
+          menuData={baseRouterList}
           {...settings}
           location={{
             pathname,
@@ -174,6 +169,7 @@ export const Layout = () => {
           )}
           onMenuHeaderClick={() => navigate('/')}
         >
+          <PageContainer><Outlet /></PageContainer>
         </ProLayout>
       </div>
     </ProConfigProvider>
