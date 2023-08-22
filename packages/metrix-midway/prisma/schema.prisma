@@ -37,13 +37,12 @@ enum MetricsType {
 }
 
 model Metrics {
-  id                 Int         @id @default(autoincrement())
-  unitTest           UnitTest    @relation(fields: [unitTestId], references: [id])
-  unitTestId         Int
-  type               MetricsType
-  jsBundleLoadedTime Int
-  fpTime             Int
-  runAt              DateTime
-  createdAt          DateTime    @default(now())
-  updatedAt          DateTime    @updatedAt
+  id         Int         @id @default(autoincrement())
+  unitTest   UnitTest    @relation(fields: [unitTestId], references: [id])
+  unitTestId Int
+  type       MetricsType
+  value      BigInt      @db.UnsignedBigInt
+  runAt      DateTime
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 }

@@ -2,6 +2,7 @@ import AdmZip from 'adm-zip';
 import { Inject, Controller, Post, Files, Fields } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { prisma } from '../prisma.js';
+import { MetricsType, Prisma } from '@prisma/client';
 
 @Controller('/logs')
 export class LogController {
@@ -24,7 +25,7 @@ export class LogController {
       const zipEntry = zipEntries.find(zipEntry => {
         return zipEntry.entryName === 'metrix.log';
       });
-      const metricsText = zipEntry.getData().toString('utf8');
+      const metricsText = zipEntry.getData().toString('utf8').trim();
       const unitTest = await prisma.unitTest.create({
         data: {
           name: unitTestName,
@@ -49,22 +50,30 @@ export class LogController {
           },
         });
       }
+
+      const keys = Object.keys(MetricsType);
+      const metricsInfoArray = [];
       metricsText.split('\n').forEach(line => {
-        console.log(line);
-        // console.log(line.split('| INFO :'));
+        const [rawTime, rawMetricsInfo] = line.split('| INFO :');
+        const runAt = rawTime.trim();
+        try {
+          const metricsInfo = JSON.parse(rawMetricsInfo);
+          keys.forEach(key => {
+            metricsInfoArray.push({
+              unitTestId: unitTest.id,
+              runAt,
+              type: MetricsType[key],
+              value: BigInt(metricsInfo[key] * 1000),
+            });
+          });
+        } catch (error) {
+          console.error(error);
+        }
       });
-      //   let metricsJSON: {
-      //     usedCpu: number;
-      //     jsFps: number;
-      //     usedRam: number;
-      //     uiFps: number;
-      //   }[];
-      //   try {
-      //     metricsJSON = JSON.parse(metricsText);
-      //   } catch (e) {
-      //     console.error(e);
-      //   }
-      //   console.log(metricsJSON);
+      await prisma.metrics.createMany({
+        data: metricsInfoArray,
+        skipDuplicates: true,
+      });
     });
     return { success: true };
   }
