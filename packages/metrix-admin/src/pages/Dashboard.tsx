@@ -1,0 +1,1 @@
+export const Dashboard = () => 1212
