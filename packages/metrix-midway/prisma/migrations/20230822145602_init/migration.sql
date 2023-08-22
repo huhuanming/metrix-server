@@ -27,6 +27,7 @@ CREATE TABLE `Metrics` (
     `type` ENUM('uiFps', 'jsFps', 'usedCpu', 'usedRam') NOT NULL,
     `jsBundleLoadedTime` INTEGER NOT NULL,
     `fpTime` INTEGER NOT NULL,
+    `runAt` DATETIME(3) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 

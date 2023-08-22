@@ -43,6 +43,7 @@ model Metrics {
   type               MetricsType
   jsBundleLoadedTime Int
   fpTime             Int
+  runAt              DateTime
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @updatedAt
 }
