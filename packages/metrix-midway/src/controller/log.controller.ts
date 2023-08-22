@@ -15,10 +15,10 @@ export class LogController {
     @Files() files,
     @Fields() fields: { unitTestName: string; password: string; extra: string }
   ) {
-    const { unitTestName, password, extra } = fields;
-    // if (password !== UPLOAD_PASSWORD) {
+    // if (fields.password !== UPLOAD_PASSWORD) {
     //   return { success: false, message: 'password is wrong' };
     // }
+    const { unitTestName, extra } = fields;
     setTimeout(async () => {
       const file = files[0];
       const zip = new AdmZip(file.data);
