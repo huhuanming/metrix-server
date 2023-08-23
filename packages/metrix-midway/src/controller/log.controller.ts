@@ -64,7 +64,7 @@ export class LogController {
               unitTestId: unitTest.id,
               runAt,
               type: MetricsType[key],
-              value: BigInt(metricsInfo[key] * 1000),
+              value: BigInt((metricsInfo[key] * 1000).toFixed()),
             });
           });
         } catch (error) {
