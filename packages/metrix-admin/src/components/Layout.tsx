@@ -27,7 +27,7 @@ const baseRouterList = [
     icon: <DashboardOutlined />,
   },
 ];
-export const Layout = ({children}) => {
+export const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [pathname, setPathname] = useState(location.pathname);
