@@ -41,6 +41,19 @@ export class DashboardController {
     });
   }
 
+  @Post('/unit_test_by_name')
+  async getUnitTestsByName(@Body('name') name) {
+    return await prisma.unitTest.findMany({
+      include: {
+        Measure: true,
+        MetricsStatistics: true,
+      },
+      where: {
+        name,
+      },
+    });
+  }
+
   @Del('/unit_tests')
   async deleteUnitTestsByid(@Query('unitTestId') id) {
     // return await prisma.unitTest.delete({
@@ -62,7 +75,6 @@ export class DashboardController {
 
   @Post('/metrics')
   async metrics(@Body('unitTestIds') ids, @Body('type') type) {
-    console.log(ids, type);
     const metricsType = MetricsType[type];
     if (!metricsType) {
       return [];

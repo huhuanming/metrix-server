@@ -1,10 +1,11 @@
 import { Line } from "@ant-design/plots";
-import { Card, Divider, Spin, Table } from "antd";
-import { flow } from 'lodash'
+import { Card, Divider, Select, Spin, Table } from "antd";
+import { flow, groupBy } from 'lodash'
 import useSWR from 'swr'
 import BigNumber from 'bignumber.js'
 import { Metrics, MetricsType, UnitTest } from "../type";
 import { avgMetricsStatistic, normalizedCPU, normalizedMemory } from "../utils";
+import { useState } from "react";
 
 // const baseConfig = {
 //     padding: 'auto',
@@ -29,12 +30,23 @@ interface MetricsStatisticChartItem {
 }
 
 const normalizeRunAt = (data: Metrics[]): RawMetricsStatisticChartItem[] => {
-    const firstRunAtTime = new Date(data[0].runAt).getTime()
-    return data.map(item => ({
+    const groups = groupBy(data.map(item => ({
         category: String(item.unitTestId),
         value: item.value,
-        runAt: (new Date(item.runAt).getTime() - firstRunAtTime) / 1000
-    }))
+        runAt: new Date(item.runAt).getTime()
+    })).sort((a, b) => a.runAt - b.runAt), 'category')
+    const result: RawMetricsStatisticChartItem[] = []
+    Object.keys(groups).forEach(key => {
+        const group = groups[key]
+        const firstRunAtTime = group[0].runAt
+        group.forEach(item => {
+            result.push({
+                ...item,
+                runAt: (new Date(item.runAt).getTime() - firstRunAtTime) / 1000
+            })
+        })
+    })
+    return result
 }
 
 const formatFPS = (data: RawMetricsStatisticChartItem[]): MetricsStatisticChartItem[] => {
@@ -70,7 +82,7 @@ const getForFormatFunc = (type: MetricsType) => {
     return FormatMap[type] || ((arr: []) => arr)
 }
 
-const BasicInfo = ({ ids }: { ids: string[] }) => {
+const BasicInfo = ({ ids }: { ids: number[] }) => {
     const { data, isLoading } = useSWR<UnitTest[]>(
         [`/api/dashboard/unit_test`, { method: 'post', body: { unitTestIds: ids } }]);
     return (
@@ -149,7 +161,7 @@ const COLOR_PLATE_10 = [
     '#FF99C3',
 ];
 
-const ChartCard = ({ ids, type, title }: { ids: string[], type: MetricsType, title: string }) => {
+const ChartCard = ({ ids, type, title }: { ids: number[], type: MetricsType, title: string }) => {
     const { data, isLoading } = useSWR<Metrics[]>([`/api/dashboard/metrics`, { method: 'post', body: { unitTestIds: ids, type } }]);
     const result = data ? flow(normalizeRunAt, getForFormatFunc(type))(data) : []
     return (
@@ -162,6 +174,7 @@ const ChartCard = ({ ids, type, title }: { ids: string[], type: MetricsType, tit
                             padding="auto"
                             xField="runAt"
                             yField="value"
+                            seriesField="category"
                             data={result}
                         />
                     )
@@ -173,13 +186,30 @@ const ChartCard = ({ ids, type, title }: { ids: string[], type: MetricsType, tit
 
 
 export function Details() {
+    const [selectedIds, seSelectedIds] = useState<number[]>([]);
     const id = new URLSearchParams(location.search).get('id');
-    if (!id) {
+    const { data, isLoading: isUnitTestLoading } = useSWR<UnitTest[]>(
+        [`/api/dashboard/unit_test`, { method: 'post', body: { unitTestIds: [id] } }]);
+    const { data: unitTestData, isLoading: isUnitTestDataLoading } = useSWR<UnitTest[]>(
+        [`/api/dashboard/unit_test_by_name`, { method: 'post', body: { name: data?.[0].name } }]);
+    if (isUnitTestLoading || isUnitTestDataLoading || !unitTestData) {
         return null
     }
-    const ids = [id]
+    const ids = [Number(id), ...selectedIds]
     return (
         <div>
+            <Select
+                allowClear
+                mode="multiple"
+                style={{ width: '40vw' }}
+                placeholder="Compare To"
+                onChange={seSelectedIds}
+                options={unitTestData.filter(item => item.id !== Number(id)).map(item => ({
+                    label: `${item.id}-${new Date(item.createdAt).toLocaleString()}`,
+                    value: item.id,
+                }))}
+            />
+            <Divider />
             <BasicInfo
                 ids={ids}
             />

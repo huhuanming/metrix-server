@@ -70,7 +70,6 @@ export const Dashboard = () => {
                     render={(id) => (
                         <Space size="middle">
                             <a href={`./details?id=${id}`}>Details</a>
-                            <a href={`./details?id=${id}`}>Compare</a>
                         </Space>
                     )}
                 />
