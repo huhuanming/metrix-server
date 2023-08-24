@@ -35,7 +35,7 @@
   },
   "scripts": {
     "start": "pnpm prisma generate && cross-env NODE_ENV=production node ./bootstrap.js",
-    "dev": "pnpm prisma generate &&  && cross-env NODE_ENV=local mwtsc --watch --run @midwayjs/mock/app",
+    "dev": "pnpm prisma generate && cross-env NODE_ENV=local mwtsc --watch --run @midwayjs/mock/app",
     "test": "cross-env NODE_ENV=unittest mocha --require test/setup.mjs",
     "cov": "cross-env c8 --all --reporter=text --reporter=lcovonly npm run test",
     "lint": "mwts check",

@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE `Measure` ADD COLUMN `isDeleted` TINYINT NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE `Metrics` ADD COLUMN `isDeleted` TINYINT NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE `UnitTest` ADD COLUMN `isDeleted` TINYINT NOT NULL DEFAULT 0;

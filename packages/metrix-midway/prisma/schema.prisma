@@ -13,6 +13,7 @@ datasource db {
 model UnitTest {
   id        Int       @id @default(autoincrement())
   name      String    @db.VarChar(100)
+  isDeleted Int       @default(0) @db.TinyInt
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   Measure   Measure?
@@ -20,13 +21,23 @@ model UnitTest {
 }
 
 model Measure {
-  id                 Int      @id @default(autoincrement())
-  unitTest           UnitTest @relation(fields: [unitTestId], references: [id])
-  unitTestId         Int      @unique
-  jsBundleLoadedTime Int
-  fpTime             Int
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  id                   Int       @id @default(autoincrement())
+  unitTest             UnitTest  @relation(fields: [unitTestId], references: [id])
+  unitTestId           Int       @unique
+  jsBundleLoadedTime   Int
+  jsBundleLoadedTimeAt DateTime?
+  fpTime               Int
+  fpTimeAt             DateTime?
+  commitHash           String?   @db.VarChar(40)
+  brand                String?   @db.VarChar(20)
+  buildNumber          String?   @db.VarChar(20)
+  deviceId             String?   @db.VarChar(40)
+  model                String?   @db.VarChar(40)
+  systemName           String?   @db.VarChar(20)
+  systemVersion        String?   @db.VarChar(20)
+  isDeleted            Int       @default(0) @db.TinyInt
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 }
 
 enum MetricsType {
@@ -43,6 +54,7 @@ model Metrics {
   type       MetricsType
   value      BigInt      @db.UnsignedBigInt
   runAt      DateTime
+  isDeleted  Int         @default(0) @db.TinyInt
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 }

@@ -4,7 +4,7 @@ import { Context } from '@midwayjs/koa';
 import { prisma } from '../prisma.js';
 import { MetricsType } from '@prisma/client';
 
-// const UPLOAD_PASSWORD = process.env.UPLOAD_PASSWORD;
+const UPLOAD_PASSWORD = process.env.UPLOAD_PASSWORD;
 @Controller('/api/logs')
 export class LogController {
   @Inject()
@@ -15,12 +15,13 @@ export class LogController {
     @Files() files,
     @Fields() fields: { unitTestName: string; password: string; extra: string }
   ) {
-    // if (fields.password !== UPLOAD_PASSWORD) {
-    //   return { success: false, message: 'password is wrong' };
-    // }
+    if (fields.password !== UPLOAD_PASSWORD) {
+      return { success: false, message: 'password is wrong' };
+    }
     const { unitTestName, extra } = fields;
     setTimeout(async () => {
       const file = files[0];
+      console.log(file, extra);
       const zip = new AdmZip(file.data);
       const zipEntries = zip.getEntries();
       const zipEntry = zipEntries.find(zipEntry => {
