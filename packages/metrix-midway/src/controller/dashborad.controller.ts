@@ -1,4 +1,4 @@
-import { Inject, Controller, Get, Query } from '@midwayjs/core';
+import { Inject, Controller, Get, Query, Delete } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { prisma } from '../prisma.js';
 import { MetricsType } from '@prisma/client';
@@ -14,6 +14,15 @@ export class DashboardController {
       orderBy: [{ id: 'desc' }],
       include: {
         Measure: true,
+      },
+    });
+  }
+
+  @Delete('/unit_tests')
+  async deleteUnitTests(@Query('unitTestId') id) {
+    return await prisma.unitTest.delete({
+      where: {
+        id: Number(id),
       },
     });
   }
