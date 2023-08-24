@@ -1,7 +1,6 @@
 import { Space, Table } from "antd";
-import { flow } from "lodash";
 import useSWR from 'swr'
-import { MetricsStatistic, MetricsType, StatisticsType, UnitTest } from "../type";
+import { MetricsType, UnitTest } from "../type";
 import { normalizedCPU, normalizedMemory, avgMetricsStatistic } from "../utils";
 
 
