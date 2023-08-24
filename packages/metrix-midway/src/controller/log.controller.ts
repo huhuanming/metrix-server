@@ -2,9 +2,13 @@ import AdmZip from 'adm-zip';
 import { Inject, Controller, Post, Files, Fields } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { prisma } from '../prisma.js';
-import { Measure, MetricsType } from '@prisma/client';
+import { Measure, MetricsType, StatisticsType } from '@prisma/client';
+import { normalizedBitInt } from '../utils.js';
 
 const UPLOAD_PASSWORD = process.env.UPLOAD_PASSWORD;
+
+
+
 @Controller('/api/logs')
 export class LogController {
   @Inject()
@@ -58,19 +62,19 @@ export class LogController {
         });
       }
 
-      const keys = Object.keys(MetricsType);
+      const metricsTypeKeys = Object.keys(MetricsType) as MetricsType[];
       const metricsInfoArray = [];
       metricsText.split('\n').forEach(line => {
         const [rawTime, rawMetricsInfo] = line.split('| INFO :');
         const runAt = rawTime.trim();
         try {
           const metricsInfo = JSON.parse(rawMetricsInfo);
-          keys.forEach(key => {
+          metricsTypeKeys.forEach(key => {
             metricsInfoArray.push({
               unitTestId: unitTest.id,
               runAt,
               type: MetricsType[key],
-              value: BigInt((metricsInfo[key] * 1000).toFixed()),
+              value: normalizedBitInt(metricsInfo[key] * 1000),
             });
           });
         } catch (error) {
@@ -80,6 +84,47 @@ export class LogController {
       await prisma.metrics.createMany({
         data: metricsInfoArray,
         skipDuplicates: true,
+      });
+
+      const metricsStatisticsArray = [];
+      for (let index = 0; index < metricsTypeKeys.length; index++) {
+        const key = metricsTypeKeys[index];
+        const avg = await prisma.metrics.aggregate({
+          _max: {
+            value: true,
+          },
+          _avg: {
+            value: true,
+          },
+          _min: {
+            value: true,
+          },
+          where: {
+            unitTestId: unitTest.id,
+            type: key,
+          },
+        });
+        metricsStatisticsArray.push({
+          type: key,
+          statistics: StatisticsType.avg,
+          unitTestId: unitTest.id,
+          value: normalizedBitInt(avg._max.value),
+        });
+        metricsStatisticsArray.push({
+          type: key,
+          statistics: StatisticsType.max,
+          unitTestId: unitTest.id,
+          value: normalizedBitInt(avg._avg.value),
+        });
+        metricsStatisticsArray.push({
+          type: key,
+          statistics: StatisticsType.min,
+          unitTestId: unitTest.id,
+          value: normalizedBitInt(avg._min.value),
+        });
+      }
+      await prisma.metricsStatistics.createMany({
+        data: metricsStatisticsArray,
       });
     });
     return { success: true };
