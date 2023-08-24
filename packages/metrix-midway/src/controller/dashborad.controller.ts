@@ -14,6 +14,7 @@ export class DashboardController {
       orderBy: [{ id: 'desc' }],
       include: {
         Measure: true,
+        MetricsStatistics: true,
       },
     });
   }
@@ -44,17 +45,12 @@ export class DashboardController {
     if (!metricsType) {
       return [];
     }
-    return (
-      await prisma.metrics.findMany({
-        where: {
-          type: metricsType,
-          unitTestId,
-        },
-      })
-    ).map(info => ({
-      ...info,
-      value: String(info.value),
-    }));
+    return await prisma.metrics.findMany({
+      where: {
+        type: metricsType,
+        unitTestId,
+      },
+    });
   }
 
   @Get('/upload-password')

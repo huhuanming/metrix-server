@@ -1,3 +1,6 @@
+import BigNumber from 'bignumber.js'
+import { MetricsStatistic, MetricsType, StatisticsType } from '../type';
+
 export interface MenuItem {
     label: string;
     key: string;
@@ -8,7 +11,24 @@ export interface MenuItem {
     // element?: { element: () => Promise<{ [key: string]: any }> };
 }
 
+export const normalizedMemory = (value: string) => BigNumber(value).dividedBy(1024).dividedBy(1024).toFixed(2);
 
+export const normalizedCPU = (value: string) => BigNumber(value).dividedBy(100).toFixed(4) + '%';
+
+export const normalizeValue = (value?: string, placeholder = '-') => {
+    if (!value) {
+        return placeholder
+    }
+    return BigNumber(value).shiftedBy(-3).toFixed()
+}
+
+export const findMetricsStatistics = (
+    statistics: MetricsStatistic[],
+    type: MetricsType,
+    statisticsType: StatisticsType,
+) => {
+    return statistics.find((item) => item.type === type && item.statistics === statisticsType)?.value;
+}
 
 export const treeRouter = (list: MenuItem[]) => {
     return list.map((item) => {

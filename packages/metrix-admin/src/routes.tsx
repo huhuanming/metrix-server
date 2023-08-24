@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { Dashboard } from "./pages/Dashboard";
 import { Layout } from "./components/Layout";
 import { UploadPassword } from "./pages/UploadPassword";
+import { Details } from "./pages/Details";
 
 export const routes = [
     {
@@ -17,6 +18,10 @@ export const routes = [
         {
           path: 'dashboard',
           element: <Dashboard />,
+        },
+        {
+          path: 'details',
+          element: <Details />,
         },
         {
           path: 'upload-password',

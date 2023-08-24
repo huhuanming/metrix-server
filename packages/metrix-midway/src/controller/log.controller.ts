@@ -108,13 +108,13 @@ export class LogController {
           type: key,
           statistics: StatisticsType.avg,
           unitTestId: unitTest.id,
-          value: normalizedBitInt(avg._max.value),
+          value: normalizedBitInt(avg._avg.value),
         });
         metricsStatisticsArray.push({
           type: key,
           statistics: StatisticsType.max,
           unitTestId: unitTest.id,
-          value: normalizedBitInt(avg._avg.value),
+          value: normalizedBitInt(avg._max.value),
         });
         metricsStatisticsArray.push({
           type: key,

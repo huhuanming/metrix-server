@@ -53,9 +53,9 @@ export const Layout = () => {
   return (
     <ProConfigProvider dark={dark}>
       <div
-        id="admin-pro-layout"
         style={{
           height: '100vh',
+          width: '100vw',
         }}
       >
         <ProLayout
