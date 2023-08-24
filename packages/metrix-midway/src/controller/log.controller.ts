@@ -2,7 +2,7 @@ import AdmZip from 'adm-zip';
 import { Inject, Controller, Post, Files, Fields } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { prisma } from '../prisma.js';
-import { MetricsType } from '@prisma/client';
+import { Measure, MetricsType } from '@prisma/client';
 
 const UPLOAD_PASSWORD = process.env.UPLOAD_PASSWORD;
 @Controller('/api/logs')
@@ -33,11 +33,7 @@ export class LogController {
           name: unitTestName,
         },
       });
-      let measureJSON: {
-        jsBundleLoadedTime: number;
-        fpTime: number;
-        batteryUsed: number;
-      };
+      let measureJSON: Measure;
       try {
         measureJSON = JSON.parse(extra);
       } catch (e) {
@@ -47,7 +43,16 @@ export class LogController {
         await prisma.measure.create({
           data: {
             jsBundleLoadedTime: measureJSON.jsBundleLoadedTime,
+            jsBundleLoadedTimeAt: measureJSON.jsBundleLoadedTimeAt,
             fpTime: measureJSON.fpTime,
+            fpTimeAt: measureJSON.fpTimeAt,
+            commitHash: measureJSON.commitHash,
+            brand: measureJSON.brand,
+            buildNumber: measureJSON.buildNumber,
+            deviceId: measureJSON.deviceId,
+            model: measureJSON.model,
+            systemName: measureJSON.systemName,
+            systemVersion: measureJSON.systemVersion,
             unitTestId: unitTest.id,
           },
         });
