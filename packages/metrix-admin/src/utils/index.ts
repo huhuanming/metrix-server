@@ -12,17 +12,19 @@ export interface MenuItem {
     // element?: { element: () => Promise<{ [key: string]: any }> };
 }
 
+const PLACEHOLDER = '-'
+
 export const avgMetricsStatistic = (arr: MetricsStatistic[], type: MetricsType, ...funcs: ((arg: string) => string)[]) => flow(
     findMetricsStatistics,
     normalizeValue,
     ...funcs,
 )(arr, type, StatisticsType.avg);
 
-export const normalizedMemory = (value: string) => BigNumber(value).dividedBy(1024).dividedBy(1024).toFixed(2);
+export const normalizedMemory = (value: string) => value ? BigNumber(value).dividedBy(1024).dividedBy(1024).toFixed(2) : value;
 
-export const normalizedCPU = (value: string) => BigNumber(value).dividedBy(100).toFixed(4) + '%';
+export const normalizedCPU = (value: string) => value ? BigNumber(value).dividedBy(100).toFixed(4) + '%' : value;
 
-export const normalizeValue = (value?: string, placeholder = '-') => {
+export const normalizeValue = (value?: string, placeholder = PLACEHOLDER) => {
     if (!value) {
         return placeholder
     }
@@ -34,6 +36,9 @@ export const findMetricsStatistics = (
     type: MetricsType,
     statisticsType: StatisticsType,
 ) => {
+    if (!statistics) {
+        return undefined
+    }
     return statistics.find((item) => item.type === type && item.statistics === statisticsType)?.value;
 }
 
