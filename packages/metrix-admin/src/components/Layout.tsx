@@ -1,6 +1,7 @@
 import {
   DashboardOutlined,
   InfoCircleFilled,
+  KeyOutlined,
   LoginOutlined,
   PlusCircleFilled,
   QuestionCircleFilled,
@@ -19,12 +20,16 @@ const Settings = {
     logo: '',
 }
 
-const baseRouterList = [
+const defaultMenus = [
   {
-    label: 'Dashboard',
-    key: 'dashboard',
-    path: 'dashboard',
+    name: 'Dashboard',
+    path: '/dashboard',
     icon: <DashboardOutlined />,
+  },
+  {
+    name: 'Upload Password',
+    path: '/upload-password',
+    icon: <KeyOutlined />,
   },
 ];
 export const Layout = () => {
@@ -34,13 +39,6 @@ export const Layout = () => {
   const [dark, setDark] = useState(
     getOperatingSystem() === 'mac' && window.matchMedia('(prefers-color-scheme: dark)').matches
   );
-
-  const settings: ProSettings | undefined = {
-    title: Settings.title,
-    // fixSiderbar: true,
-    layout: 'mix',
-    // splitMenus: true,
-  };
 
   useEffect(() => {
     // 监听 Macos系统 颜色切换
@@ -63,15 +61,11 @@ export const Layout = () => {
         <ProLayout
           fixSiderbar
           siderWidth={245}
-          logo={Settings.logo}
+          title="Performance Guard"
           ErrorBoundary={false}
-          menuData={baseRouterList}
-          {...settings}
+          menu={{ request: () => Promise.resolve(defaultMenus) }}
           location={{
             pathname,
-          }}
-          waterMarkProps={{
-            content: Settings.title,
           }}
           appList={[
           ]}

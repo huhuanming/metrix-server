@@ -1,19 +1,23 @@
 import { Space, Table } from "antd";
-import { useEffect, useState } from "react";
+import useSWR from 'swr'
+import { UnitTest } from "../type";
 
 export const Dashboard = () => {
-    const [unitTests, setUnitTests] = useState([])
-    useEffect(() => {
-        fetch('api/dashboard/unit_tests').then(res => res.json()).then(res => {
-            setUnitTests(res)
-        })
-    }, [])
+    const { data, isLoading } = useSWR<UnitTest[]>('/api/dashboard/unit_tests', { revalidateOnFocus: true })
+
     return (
         <div>
-            <Table dataSource={unitTests} rowKey="id" >
+            <Table dataSource={data} rowKey="id"  loading={isLoading}>
                 <Table.Column title="ID" dataIndex="id" />
                 <Table.Column title="UnitTest Name" dataIndex="name" />
-                <Table.Column title="Device" dataIndex="device" />
+                <Table.Column
+                    width={200}
+                    title="Device"
+                    dataIndex="device"
+                    render={
+                        (_, record: UnitTest) => `${record.Measure.model} (${record.Measure.systemName} ${record.Measure.systemVersion})`
+                    }
+                />
                 <Table.Column 
                     title="jsBundleLoadedTime(s)"
                     dataIndex="jsBundleLoadedTime"
@@ -25,35 +29,35 @@ export const Dashboard = () => {
                     title="First Paint Time(s)"
                     dataIndex="fpTime"
                     render={
-                        (_, record: { Measure: { fpTime: number } }) =>
+                        (_, record: UnitTest) =>
                             record.Measure.fpTime / 1000}
                 />
                 <Table.Column 
                     title="UI FPS(Avg.)"
-                    dataIndex="fpTime"
+                    dataIndex="uiFPS"
                     render={
-                        (_, record: { Measure: { fpTime: number } }) =>
+                        (_, record: UnitTest) =>
                             record.Measure.fpTime / 1000}
                 />
                 <Table.Column 
                     title="JS FPS(Avg.)"
-                    dataIndex="fpTime"
+                    dataIndex="jsFPS"
                     render={
-                        (_, record: { Measure: { fpTime: number } }) =>
+                        (_, record: UnitTest) =>
                             record.Measure.fpTime / 1000}
                 />
                 <Table.Column 
                     title="Used Memory(Avg.)"
-                    dataIndex="fpTime"
+                    dataIndex="usedMem"
                     render={
-                        (_, record: { Measure: { fpTime: number } }) =>
+                        (_, record: UnitTest) =>
                             record.Measure.fpTime / 1000}
                 />
                 <Table.Column 
                     title="Used CPU(Avg.)"
-                    dataIndex="fpTime"
+                    dataIndex="usedCpu"
                     render={
-                        (_, record: { Measure: { fpTime: number } }) =>
+                        (_, record: UnitTest) =>
                             record.Measure.fpTime / 1000}
                 />
                 <Table.Column title="Create At" dataIndex="createdAt" />

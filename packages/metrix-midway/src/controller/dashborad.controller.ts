@@ -1,4 +1,4 @@
-import { Inject, Controller, Get, Query, Delete } from '@midwayjs/core';
+import { Inject, Controller, Get, Query, Del } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { prisma } from '../prisma.js';
 import { MetricsType } from '@prisma/client';
@@ -18,7 +18,7 @@ export class DashboardController {
     });
   }
 
-  @Delete('/unit_tests')
+  @Del('/unit_tests')
   async deleteUnitTests(@Query('unitTestId') id) {
     return await prisma.unitTest.delete({
       where: {
@@ -55,5 +55,10 @@ export class DashboardController {
       ...info,
       value: String(info.value),
     }));
+  }
+
+  @Get('/upload-password')
+  async getUploadPassword() {
+    return { password: process.env.UPLOAD_PASSWORD };
   }
 }

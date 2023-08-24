@@ -2,6 +2,7 @@ import { Button, Result } from "antd";
 import { Navigate } from 'react-router-dom';
 import { Dashboard } from "./pages/Dashboard";
 import { Layout } from "./components/Layout";
+import { UploadPassword } from "./pages/UploadPassword";
 
 export const routes = [
     {
@@ -16,6 +17,10 @@ export const routes = [
         {
           path: 'dashboard',
           element: <Dashboard />,
+        },
+        {
+          path: 'upload-password',
+          element: <UploadPassword />,
         },
         {
           path: '/*',
