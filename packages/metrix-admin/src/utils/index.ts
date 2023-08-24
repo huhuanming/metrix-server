@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { flow } from 'lodash'
 import { MetricsStatistic, MetricsType, StatisticsType } from '../type';
 
 export interface MenuItem {
@@ -10,6 +11,12 @@ export interface MenuItem {
     children?: MenuItem[];
     // element?: { element: () => Promise<{ [key: string]: any }> };
 }
+
+export const avgMetricsStatistic = (arr: MetricsStatistic[], type: MetricsType, ...funcs: ((arg: string) => string)[]) => flow(
+    findMetricsStatistics,
+    normalizeValue,
+    ...funcs,
+)(arr, type, StatisticsType.avg);
 
 export const normalizedMemory = (value: string) => BigNumber(value).dividedBy(1024).dividedBy(1024).toFixed(2);
 

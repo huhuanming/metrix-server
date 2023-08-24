@@ -2,13 +2,8 @@ import { Space, Table } from "antd";
 import { flow } from "lodash";
 import useSWR from 'swr'
 import { MetricsStatistic, MetricsType, StatisticsType, UnitTest } from "../type";
-import { findMetricsStatistics, normalizeValue, normalizedCPU, normalizedMemory } from "../utils";
+import { normalizedCPU, normalizedMemory, avgMetricsStatistic } from "../utils";
 
-const avgMetricsStatistic = (arr: MetricsStatistic[], type: MetricsType, ...funcs: ((arg: string) => string)[]) => flow(
-    findMetricsStatistics,
-    normalizeValue,
-    ...funcs,
-)(arr, type, StatisticsType.avg);
 
 export const Dashboard = () => {
     const { data, isLoading } = useSWR<UnitTest[]>('/api/dashboard/unit_tests', { revalidateOnFocus: true })

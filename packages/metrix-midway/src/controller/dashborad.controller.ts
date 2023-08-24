@@ -1,4 +1,12 @@
-import { Inject, Controller, Get, Query, Del } from '@midwayjs/core';
+import {
+  Inject,
+  Controller,
+  Get,
+  Query,
+  Body,
+  Del,
+  Post,
+} from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { prisma } from '../prisma.js';
 import { MetricsType } from '@prisma/client';
@@ -19,13 +27,27 @@ export class DashboardController {
     });
   }
 
-  @Del('/unit_tests')
-  async deleteUnitTests(@Query('unitTestId') id) {
-    return await prisma.unitTest.delete({
+  @Post('/unit_test')
+  async getUnitTestsByIds(@Body('unitTestIds') ids) {
+    ids = ids.slice(0, 100);
+    return await prisma.unitTest.findMany({
+      include: {
+        Measure: true,
+        MetricsStatistics: true,
+      },
       where: {
-        id: Number(id),
+        id: { in: ids.map((i: string) => Number(i)) },
       },
     });
+  }
+
+  @Del('/unit_tests')
+  async deleteUnitTestsByid(@Query('unitTestId') id) {
+    // return await prisma.unitTest.delete({
+    //   where: {
+    //     id: Number(id),
+    //   },
+    // });
   }
 
   @Get('/measure')
