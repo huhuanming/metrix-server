@@ -60,9 +60,9 @@ export class DashboardController {
     });
   }
 
-  @Get('/metrics')
-  async metrics(@Query('unitTestId') id, @Query('type') type) {
-    const unitTestId = Number(id);
+  @Post('/metrics')
+  async metrics(@Body('unitTestIds') ids, @Body('type') type) {
+    console.log(ids, type);
     const metricsType = MetricsType[type];
     if (!metricsType) {
       return [];
@@ -70,7 +70,7 @@ export class DashboardController {
     return await prisma.metrics.findMany({
       where: {
         type: metricsType,
-        unitTestId,
+        unitTestId: { in: ids.map((i: string) => Number(i)) },
       },
     });
   }
