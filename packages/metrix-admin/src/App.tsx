@@ -20,7 +20,12 @@ function App() {
             'Content-Type': 'application/json;charset=UTF-8',
               ...options?.headers,
             },
-          }).then(res => res.json())
+          }).then(res => {
+            if (res.status === 401) {
+              window.location.href = '/login'
+            }
+            return res.json()
+          })
         }
       }}
     >

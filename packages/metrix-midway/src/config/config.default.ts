@@ -6,4 +6,8 @@ export default {
   koa: {
     port: 7001,
   },
+  jwt: {
+    secret: process.env.JWT_SECRET || 'NJR6nnn0uhn1qzp2fat',
+    expiresIn: '2d', // https://github.com/vercel/ms
+  },
 } as MidwayConfig;

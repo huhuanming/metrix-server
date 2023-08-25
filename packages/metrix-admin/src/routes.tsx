@@ -4,6 +4,7 @@ import { Dashboard } from "./pages/Dashboard";
 import { Layout } from "./components/Layout";
 import { UploadPassword } from "./pages/UploadPassword";
 import { Details } from "./pages/Details";
+import { Login } from "./pages/Login";
 
 export const routes = [
     {
@@ -42,8 +43,8 @@ export const routes = [
         },
       ],
     },
-    // {
-    //   path: '/login',
-    //   element: <Login />,
-    // },
+    {
+      path: '/login',
+      element: <Login />,
+    }
   ];

@@ -10,8 +10,9 @@ import {
 import { Context } from '@midwayjs/koa';
 import { prisma } from '../prisma.js';
 import { MetricsType } from '@prisma/client';
+import { JwtMiddleware } from '../middleware/jwt.middleware.js';
 
-@Controller('/api/dashboard')
+@Controller('/api/dashboard', { middleware: [JwtMiddleware] })
 export class DashboardController {
   @Inject()
   ctx: Context;
