@@ -9,7 +9,7 @@ export const Dashboard = () => {
 
     return (
         <div>
-            <Table dataSource={data} rowKey="id"  loading={isLoading}>
+            <Table dataSource={data.filter(item => !!item.Measure)} rowKey="id"  loading={isLoading}>
                 <Table.Column title="ID" dataIndex="id" />
                 <Table.Column
                     width={200}

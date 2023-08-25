@@ -6,17 +6,6 @@ import BigNumber from 'bignumber.js'
 import { Metrics, MetricsType, UnitTest } from "../type";
 import { avgMetricsStatistic, normalizedCPU, normalizedMemory } from "../utils";
 import { useState } from "react";
-
-// const baseConfig = {
-//     padding: 'auto',
-//     xField: 'runAt',
-//     yField: 'value',
-//     xAxis: {
-//         // type: 'timeCat',
-//         tickCount: 5,
-//     },
-// };
-
 interface RawMetricsStatisticChartItem {
     category: string,
     value: string
@@ -231,6 +220,7 @@ export function Details() {
                 title="Used RAM(MB)"
                 type={MetricsType.usedRam}
             />
+            <Divider />
             <ChartCard
                 ids={ids}
                 title="Used CPU(%)"
