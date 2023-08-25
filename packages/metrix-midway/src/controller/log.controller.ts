@@ -56,7 +56,7 @@ export class LogController {
             model: measureJSON.model || '',
             systemName: measureJSON.systemName || '',
             systemVersion: measureJSON.systemVersion || '',
-            unitTestId: unitTest.id || '',
+            unitTestId: unitTest.id,
           },
         });
       }
