@@ -6,10 +6,9 @@ import { normalizedCPU, normalizedMemory, avgMetricsStatistic } from "../utils";
 
 export const Dashboard = () => {
     const { data, isLoading } = useSWR<UnitTest[]>('/api/dashboard/unit_tests', { revalidateOnFocus: true })
-
     return (
         <div>
-            <Table dataSource={data.filter(item => !!item.Measure)} rowKey="id"  loading={isLoading}>
+            <Table dataSource={data?.filter(item => !!item.Measure)} rowKey="id"  loading={isLoading}>
                 <Table.Column title="ID" dataIndex="id" />
                 <Table.Column
                     width={200}

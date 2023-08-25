@@ -6,8 +6,7 @@ import { Measure, MetricsType, StatisticsType } from '@prisma/client';
 import { normalizedBitInt } from '../utils.js';
 
 const UPLOAD_PASSWORD = process.env.UPLOAD_PASSWORD;
-
-
+const PlaceholderDate = new Date(0).toISOString()
 
 @Controller('/api/logs')
 export class LogController {
@@ -46,18 +45,18 @@ export class LogController {
       if (measureJSON) {
         await prisma.measure.create({
           data: {
-            jsBundleLoadedTime: measureJSON.jsBundleLoadedTime,
-            jsBundleLoadedTimeAt: measureJSON.jsBundleLoadedTimeAt,
-            fpTime: measureJSON.fpTime,
-            fpTimeAt: measureJSON.fpTimeAt,
-            commitHash: measureJSON.commitHash,
-            brand: measureJSON.brand,
+            jsBundleLoadedTime: measureJSON.jsBundleLoadedTime || 0,
+            jsBundleLoadedTimeAt: measureJSON.jsBundleLoadedTimeAt || PlaceholderDate,
+            fpTime: measureJSON.fpTime || 0,
+            fpTimeAt: measureJSON.fpTimeAt || PlaceholderDate,
+            commitHash: measureJSON.commitHash || '',
+            brand: measureJSON.brand || '',
             buildNumber: measureJSON.buildNumber,
-            deviceId: measureJSON.deviceId,
-            model: measureJSON.model,
-            systemName: measureJSON.systemName,
-            systemVersion: measureJSON.systemVersion,
-            unitTestId: unitTest.id,
+            deviceId: measureJSON.deviceId || '',
+            model: measureJSON.model || '',
+            systemName: measureJSON.systemName || '',
+            systemVersion: measureJSON.systemVersion || '',
+            unitTestId: unitTest.id || '',
           },
         });
       }
