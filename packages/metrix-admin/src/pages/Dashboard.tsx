@@ -116,6 +116,7 @@ export const Dashboard = () => {
                 pagination={{
                     pageSize: 20,
                     total: data?.totalSize,
+                    pageSizeOptions: ['20'],
                     onChange(pageIndex, pageSize) {
                         setQueryParams((prev) => ({ ...prev, pageIndex, pageSize }))
                     },
