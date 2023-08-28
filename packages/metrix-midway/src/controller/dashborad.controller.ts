@@ -18,13 +18,54 @@ export class DashboardController {
   ctx: Context;
 
   @Get('/unit_tests')
-  async getUnitTests() {
-    return await prisma.unitTest.findMany({
+  async getUnitTests(
+    @Query('pageSize') pageSize,
+    @Query('pageIndex') pageIndex,
+    @Query('name') name,
+    @Query('deviceId') deviceId,
+    @Query('model') model
+  ) {
+    const result = await prisma.unitTest.findMany({
       orderBy: [{ id: 'desc' }],
+      skip: (Number(pageIndex) - 1) * Number(pageSize),
+      take: Number(pageSize),
+      where: {
+        name: { equals: name },
+        Measure: {
+          deviceId: { equals: deviceId },
+          model: { equals: model },
+        },
+      },
       include: {
         Measure: true,
         MetricsStatistics: true,
       },
+    });
+    return {
+      pageIndex: pageIndex + 1,
+      totalSize: await prisma.unitTest.count(),
+      data: result,
+    };
+  }
+
+  @Get('/unit_test_names')
+  async getUnitTestNames() {
+    return await prisma.unitTest.groupBy({
+      by: ['name'],
+    });
+  }
+
+  @Get('/deviceId')
+  async getDeviceIds() {
+    return await prisma.measure.groupBy({
+      by: ['deviceId'],
+    });
+  }
+
+  @Get('/deviceId')
+  async getModel() {
+    return await prisma.measure.groupBy({
+      by: ['model'],
     });
   }
 
