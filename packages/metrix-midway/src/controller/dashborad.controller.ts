@@ -26,7 +26,7 @@ export class DashboardController {
     @Query('model') model
   ) {
     pageIndex = pageIndex ? Number(pageIndex) : 1;
-    pageSize = pageSize ? Number(pageSize) : 1;
+    pageSize = pageSize ? Number(pageSize) : 20;
     const result = await prisma.unitTest.findMany({
       orderBy: [{ id: 'desc' }],
       skip: pageIndex * Number(pageSize),
@@ -44,7 +44,7 @@ export class DashboardController {
       },
     });
     return {
-      pageIndex: pageIndex + 1,
+      pageIndex: pageIndex,
       totalSize: await prisma.unitTest.count(),
       data: result,
     };
