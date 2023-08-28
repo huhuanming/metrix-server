@@ -25,15 +25,17 @@ export class DashboardController {
     @Query('deviceId') deviceId,
     @Query('model') model
   ) {
+    pageIndex = pageIndex ? Number(pageIndex) : 1;
+    pageSize = pageSize ? Number(pageSize) : 1;
     const result = await prisma.unitTest.findMany({
       orderBy: [{ id: 'desc' }],
-      skip: (Number(pageIndex) - 1) * Number(pageSize),
-      take: Number(pageSize),
+      skip: pageIndex * Number(pageSize),
+      take: pageSize,
       where: {
-        name: { equals: name },
+        name: name ? { equals: name } : undefined,
         Measure: {
-          deviceId: { equals: deviceId },
-          model: { equals: model },
+          deviceId: deviceId ? { equals: deviceId } : undefined,
+          model: model ? { equals: model } : undefined,
         },
       },
       include: {
