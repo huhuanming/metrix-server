@@ -62,7 +62,7 @@ export class DashboardController {
     });
   }
 
-  @Get('/deviceId')
+  @Get('/models')
   async getModel() {
     return await prisma.measure.groupBy({
       by: ['model'],
