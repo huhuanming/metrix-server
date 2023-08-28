@@ -28,14 +28,29 @@ const normalizeRunAt = (data: Metrics[]): RawMetricsStatisticChartItem[] => {
     Object.keys(groups).forEach(key => {
         const group = groups[key]
         const firstRunAtTime = group[0].runAt
-        group.forEach(item => {
-            result.push({
-                ...item,
-                runAt: (new Date(item.runAt).getTime() - firstRunAtTime) / 1000
-            })
-        })
+        const arr = [];
+        let countTime = 1;
+        let point = 0;
+        let tempArr: RawMetricsStatisticChartItem[] = [];
+        while (point < group.length) {
+            const item = group[point];
+            const runAt = (new Date(item.runAt).getTime() - firstRunAtTime) / 1000
+            if (runAt > countTime) {
+                arr.push({
+                    ...item,
+                    value: tempArr.reduce((a, b) => BigNumber(a).plus(BigNumber(b.value)), BigNumber(0)).dividedBy(tempArr.length).toFixed(2),
+                    runAt: countTime,
+                })
+                tempArr = [];
+                countTime += 1;
+
+            }
+            tempArr.push(item);
+            point += 1;
+        }
+        result.push(...arr);
     })
-    return result
+    return result;
 }
 
 const formatFPS = (data: RawMetricsStatisticChartItem[]): MetricsStatisticChartItem[] => {
