@@ -13,7 +13,8 @@ function App() {
           const args: [resource: RequestInfo | URL, init?: RequestInit] = Array.isArray(params) ? params : [params];
           const [url, options] = args
           const body = options?.body
-          return fetch(url, {
+          const queryParams = (options as { params?: Record<string, string> } )?.params;
+          return fetch(queryParams ? `${url}?${new URLSearchParams(queryParams).toString()}` : url, {
             ...options,
             body: body ? typeof body === 'string' ?body : JSON.stringify(body) : undefined,
             headers: {

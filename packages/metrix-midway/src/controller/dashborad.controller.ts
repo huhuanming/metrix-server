@@ -27,17 +27,18 @@ export class DashboardController {
   ) {
     pageIndex = pageIndex ? Number(pageIndex) : 1;
     pageSize = pageSize ? Number(pageSize) : 20;
+    const where = {
+      name: name ? { equals: name } : undefined,
+      Measure: {
+        deviceId: deviceId ? { equals: deviceId } : undefined,
+        model: model ? { equals: model } : undefined,
+      },
+    };
     const result = await prisma.unitTest.findMany({
       orderBy: [{ id: 'desc' }],
-      skip: pageIndex * Number(pageSize),
+      skip: (pageIndex - 1) * Number(pageSize),
       take: pageSize,
-      where: {
-        name: name ? { equals: name } : undefined,
-        Measure: {
-          deviceId: deviceId ? { equals: deviceId } : undefined,
-          model: model ? { equals: model } : undefined,
-        },
-      },
+      where,
       include: {
         Measure: true,
         MetricsStatistics: true,
@@ -45,7 +46,7 @@ export class DashboardController {
     });
     return {
       pageIndex: pageIndex,
-      totalSize: await prisma.unitTest.count(),
+      totalSize: await prisma.unitTest.count({ where }),
       data: result,
     };
   }
