@@ -209,7 +209,7 @@ export function Details() {
                 placeholder="Compare To"
                 onChange={seSelectedIds}
                 options={unitTestData.filter(item => item.id !== Number(id)).map(item => ({
-                    label: `${item.id}-${new Date(item.createdAt).toLocaleString()}`,
+                    label: `${item.id}-${item.Measure.model} (${item.Measure.systemName} ${item.Measure.systemVersion})-${new Date(item.createdAt).toLocaleString()}`,
                     value: item.id,
                 }))}
             />
