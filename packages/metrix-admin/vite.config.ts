@@ -57,7 +57,7 @@ export default defineConfig({
         },
         {
           name: 'curve-matcher',
-          var: 'CurveMatcher',
+          var: 'curveMatcher',
           mode: 'defer',
           path: `dist/index.umd.min.js`,
         },
