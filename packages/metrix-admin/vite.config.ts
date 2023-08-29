@@ -39,7 +39,7 @@ export default defineConfig({
         },
         {
           name: 'bignumber.js',
-          var: 'BigNumberJS',
+          var: 'BigNumber',
           mode: 'defer',
           path: `bignumber.min.js`,
         },
@@ -63,7 +63,7 @@ export default defineConfig({
         },
         {
           name: '@ant-design/plots',
-          var: 'AntDesignPlots',
+          var: 'Plots',
           mode: 'defer',
           path: `dist/plots.min.js`,
         },
