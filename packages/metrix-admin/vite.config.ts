@@ -83,9 +83,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: id => {
-          if(id.includes('@ant-design')) {
-            return '@ant-design-libs'
-          } else if (id.includes('react-router')) {
+          if (id.includes('react-router')) {
             return 'react-router'
           } else if (id.includes('react')) {
             return 'react-libs'
