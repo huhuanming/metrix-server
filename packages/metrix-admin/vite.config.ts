@@ -1,63 +1,74 @@
 import { PluginOption, defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
-
-function unpkgPlugin(): PluginOption {
-  return {
-    name: 'vite-plugin-react-cdn',
-    enforce: 'pre',
-    config(config) {
-      config.build = config.build || {}
-      const { build } = config;
-      if (build) {
-        build.rollupOptions = {
-          ...build.rollupOptions,
-          external: [
-            'react',
-            'react-dom',
-            'antd',
-            'lodash',
-            'react-router-dom',
-            'bignumber.js',
-            '@ant-design/icons',
-            '@ant-design/pro-layout',
-            '@ant-design/pro-components',
-            '@ant-design/charts',
-            '@ant-design/plots',
-            'curve-matcher',
-          ],
-        };
-      }
-    },
-    transformIndexHtml: {
-      enforce: 'pre',
-      transform(html) {
-        return html.replace(
-          '</head>',
-          `
-          <script crossorigin defer src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-          <script crossorigin defer src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-          <script crossorigin defer src="https://unpkg.com/antd@5.8.5/dist/antd.min.js"></script>
-          <script crossorigin defer src="https://unpkg.com/react-router-dom@6.15.0/dist/umd/react-router-dom.production.min.js"></script>
-          <script crossorigin defer src="https://unpkg.com/lodash@4.17.21/lodash.min.js"></script>
-          <script crossorigin defer src="https://unpkg.com/bignumber.js@9.1.2/bignumber.js"></script>
-          <script crossorigin defer src="https://unpkg.com/@ant-design/icons@5.2.5/dist/index.umd.min.js"></script>
-          <script crossorigin defer src="https://cdn.jsdelivr.net/npm/@ant-design/pro-layout@7.16.10/lib/index.min.js"></script>
-          <script crossorigin defer src="https://cdn.jsdelivr.net/npm/@ant-design/pro-components@2.6.13/lib/index.min.js"></script>
-          <script crossorigin defer src="https://cdn.jsdelivr.net/npm/@ant-design/charts@1.4.2/dist/charts.min.js"></script>
-          <script crossorigin defer src="https://cdn.jsdelivr.net/npm/@ant-design/plots@1.2.5/dist/plots.min.js"></script>
-          <script crossorigin defer src="https://cdn.jsdelivr.net/npm/curve-matcher@1.1.1/dist/index.umd.min.js"></script>
-          </head>
-        `
-        );
-      },
-    },
-  };
-}
+import { Plugin as importToCDN } from 'vite-plugin-cdn-import'
 
 export default defineConfig({
   plugins: [
     react(),
-    unpkgPlugin(),
+    importToCDN({
+      modules: [
+        {
+          name: 'react',
+          var: 'React',
+          mode: 'defer',
+          path: `umd/react.production.min.js`,
+        },
+        {
+          name: 'react-dom',
+          var: 'ReactDOM',
+          mode: 'defer',
+          path: `umd/react-dom.production.min.js`,
+        },
+        {
+          name: 'dayjs',
+          var: 'dayjs',
+          mode: 'defer',
+          path: `dayjs.min.js`,
+        },
+        {
+          name: 'antd',
+          var: 'antd',
+          mode: 'defer',
+          path: `dist/antd.min.js`,
+        },
+        {
+          name: 'lodash',
+          var: 'lodash',
+          mode: 'defer',
+          path: `lodash.min.js`,
+        },
+        {
+          name: 'bignumber.js',
+          var: 'BigNumberJS',
+          mode: 'defer',
+          path: `bignumber.min.js`,
+        },
+        {
+          name: '@ant-design/icons',
+          var: 'icons',
+          mode: 'defer',
+          path: `dist/index.umd.min.js`,
+        },
+        {
+          name: '@ant-design/charts',
+          var: 'Charts',
+          mode: 'defer',
+          path: `dist/charts.min.js`,
+        },
+        {
+          name: 'curve-matcher',
+          var: 'CurveMatcher',
+          mode: 'defer',
+          path: `dist/index.umd.min.js`,
+        },
+        {
+          name: '@ant-design/plots',
+          var: 'AntDesignPlots',
+          mode: 'defer',
+          path: `dist/plots.min.js`,
+        },
+      ]
+    }),
   ],
   server: {
     proxy: {
@@ -67,4 +78,22 @@ export default defineConfig({
       }
     }
   },
+  build: {
+    minify: false,
+    rollupOptions: {
+      output: {
+        manualChunks: id => {
+          if(id.includes('@ant-design')) {
+            return '@ant-design-libs'
+          } else if (id.includes('react-router')) {
+            return 'react-router'
+          } else if (id.includes('react')) {
+            return 'react-libs'
+          } else if (id.includes('node_modules')) {
+            return 'vendor'
+          }
+        }
+      }
+    }
+  }
 })
