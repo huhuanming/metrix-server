@@ -33,7 +33,7 @@ export default defineConfig({
         },
         {
           name: 'lodash',
-          var: 'lodash',
+          var: '-',
           mode: 'defer',
           path: `lodash.min.js`,
         },
