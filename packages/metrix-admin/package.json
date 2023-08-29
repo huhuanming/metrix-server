@@ -18,6 +18,7 @@
     "@types/lodash": "^4.14.197",
     "antd": "^5.8.4",
     "bignumber.js": "^9.1.1",
+    "curve-matcher": "^1.1.1",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

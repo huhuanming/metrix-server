@@ -32,6 +32,9 @@ importers:
       bignumber.js:
         specifier: ^9.1.1
         version: 9.1.1
+      curve-matcher:
+        specifier: ^1.1.1
+        version: 1.1.1
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -3512,6 +3515,11 @@ packages:
 
   /csstype@3.1.2:
     resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
+
+  /curve-matcher@1.1.1:
+    resolution: {integrity: sha512-dVjbB4izZ+nkxU5oq15ElZk2IFpR1oTb1wEfMolOADse8veTn+iwF6wXejS4ll9DZRtO0/s95BDiIz6QXuE5bA==}
+    engines: {node: '>=6.0.0'}
+    dev: false
 
   /d3-array@1.2.4:
     resolution: {integrity: sha512-KHW6M86R+FUPYGb3R5XiYjXPq7VzwxZ22buHhAEVG5ztoEcZZMLov530mmccaqA1GghZArjQV46fuc8kUqhhHw==}

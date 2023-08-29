@@ -6,6 +6,8 @@ import BigNumber from 'bignumber.js'
 import { Metrics, MetricsType, UnitTest } from "../type";
 import { avgMetricsStatistic, normalizedCPU, normalizedMemory } from "../utils";
 import { useState } from "react";
+import { shapeSimilarity } from 'curve-matcher';
+
 interface RawMetricsStatisticChartItem {
     category: string,
     value: string
@@ -168,8 +170,17 @@ const COLOR_PLATE_10 = [
 const ChartCard = ({ ids, type, title }: { ids: number[], type: MetricsType, title: string }) => {
     const { data, isLoading } = useSWR<Metrics[]>([`/api/dashboard/metrics`, { method: 'post', body: { unitTestIds: ids, type } }]);
     const result = data ? flow(normalizeRunAt, getForFormatFunc(type))(data) : []
+    let similarity = 0;
+    if (result.length > 0 && ids.length === 2) {
+        const arrs = groupBy(result.map(item => ({
+            category: item.category,
+            y: item.value,
+            x: item.runAt,
+        })), 'category')
+        similarity = shapeSimilarity(arrs[ids[0]], arrs[ids[1]], { estimationPoints: 200, rotations: 30 });
+    }
     return (
-        <Card title={title} bordered>
+        <Card title={`${title}${similarity ? `${` - similarity:${similarity}`}` : ''}`} bordered>
             <Spin spinning={isLoading}>
                 {
                     result.length && (
